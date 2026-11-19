@@ -1,0 +1,187 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        form {
+            background: white;
+            max-width: 450px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        fieldset {
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+
+        input {
+            width: 95%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        button {
+            background: green;
+            color: white;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: #b00020;
+            font-size: 14px;
+        }
+
+        input:focus, button:focus {
+            outline: 3px solid blue;
+        }
+
+        #status {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<form id="registrationForm" novalidate>
+
+    <h2>Registration Form</h2>
+
+    <div id="status" role="alert" aria-live="assertive"></div>
+
+    <fieldset>
+        <legend>Personal Information</legend>
+
+        <label for="name">Full Name *</label>
+        <input type="text" id="name" name="name"
+               autocomplete="name" required
+               aria-describedby="nameError">
+        <span class="error" id="nameError"></span>
+
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email"
+               autocomplete="email" required
+               aria-describedby="emailError">
+        <span class="error" id="emailError"></span>
+
+        <label for="phone">Phone Number *</label>
+        <input type="tel" id="phone" name="phone"
+               autocomplete="tel" required
+               aria-describedby="phoneError">
+        <span class="error" id="phoneError"></span>
+    </fieldset>
+
+    <fieldset>
+        <legend>Account Information</legend>
+
+        <label for="password">Password *</label>
+        <input type="password" id="password"
+               name="password" required
+               autocomplete="new-password"
+               aria-describedby="passwordError">
+        <span class="error" id="passwordError"></span>
+
+        <label for="confirm">Confirm Password *</label>
+        <input type="password" id="confirm"
+               name="confirm" required
+               autocomplete="new-password"
+               aria-describedby="confirmError">
+        <span class="error" id="confirmError"></span>
+    </fieldset>
+
+    <button type="submit">Register</button>
+
+</form>
+
+<script>
+const form = document.getElementById("registrationForm");
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const fields = [
+        "name", "email", "phone",
+        "password", "confirm"
+    ];
+
+    const errors = {};
+    const name = document.getElementById("name");
+    const email = document.getElementById("email");
+    const phone = document.getElementById("phone");
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("confirm");
+
+    if (!name.value.trim())
+        errors.name = "Please enter your full name.";
+
+    if (!email.value.trim())
+        errors.email = "Please enter your email address.";
+    else if (!email.validity.valid)
+        errors.email = "Please enter a valid email address.";
+
+    if (!phone.value.trim())
+        errors.phone = "Please enter your phone number.";
+
+    if (!password.value)
+        errors.password = "Please enter a password.";
+    else if (password.value.length < 8)
+        errors.password = "Password must contain at least 8 characters.";
+
+    if (!confirm.value)
+        errors.confirm = "Please confirm your password.";
+    else if (password.value !== confirm.value)
+        errors.confirm = "Passwords do not match.";
+
+    fields.forEach(function(id) {
+        const input = document.getElementById(id);
+        const error = document.getElementById(id + "Error");
+
+        error.textContent = errors[id] || "";
+
+        if (errors[id]) {
+            input.setAttribute("aria-invalid", "true");
+        } else {
+            input.removeAttribute("aria-invalid");
+        }
+    });
+
+    const status = document.getElementById("status");
+
+    if (Object.keys(errors).length > 0) {
+        status.textContent =
+            "Please correct the errors in the form.";
+
+        const firstError = fields.find(id => errors[id]);
+        document.getElementById(firstError).focus();
+    } else {
+        status.textContent =
+            "Registration form submitted successfully!";
+        form.reset();
+    }
+});
+</script>
+
+</body>
+</html>
